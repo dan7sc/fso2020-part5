@@ -11,6 +11,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState([])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -28,12 +29,25 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    const credentials = { username, password }
-    const user = await loginService.login(credentials)
-    window.localStorage.setItem(
-      'loggedBlogappUser', JSON.stringify(user)
-    )
-    setUser(user)
+
+    try {
+      const credentials = { username, password }
+      const user = await loginService.login(credentials)
+
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
+
+      setUser(user)
+    } catch(e) {
+      console.error(e)
+
+      showNotification(
+        'error',
+        'wrong username or password'
+      )
+    }
+
     setUsername('')
     setPassword('')
   }
@@ -54,9 +68,24 @@ const App = () => {
     )
 
     await blogService.setToken(token)
-    const blog = await blogService.create(newBlog)
 
-    setBlogs(blogs.concat(blog))
+    try {
+      const blog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(blog))
+
+      showNotification(
+        'success',
+        `a new blog ${blog.title} by ${blog.author} added`
+      )
+    } catch(e)  {
+      console.error(e)
+
+      showNotification(
+        'error',
+        'fail to add a new blog'
+      )
+    }
+
     setTitle('')
     setAuthor('')
     setUrl('')
@@ -66,10 +95,23 @@ const App = () => {
     setFunction(event.target.value)
   }
 
+  const showNotification = (type, description) => {
+    const message = []
+    message.push(type)
+    message.push(description)
+    setMessage(message)
+    setTimeout(() => {
+      setMessage('')
+    }, 3000)
+  }
+
   const loginForm = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        {message.length > 0 && message[0] === 'error'
+         ? <div className={message[0]}>{message[1]}</div>
+         : message}
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -137,6 +179,9 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
+        {message.length > 0
+         ? <div className={message[0]}>{message[1]}</div>
+         : message}
         <span>{user.name} logged in </span>
         <button onClick={handleLogout}>logout</button>
         <br /><br />
