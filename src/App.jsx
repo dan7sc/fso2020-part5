@@ -12,6 +12,7 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [message, setMessage] = useState([])
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -40,8 +41,6 @@ const App = () => {
 
       setUser(user)
     } catch(e) {
-      console.error(e)
-
       showNotification(
         'error',
         'wrong username or password'
@@ -78,8 +77,6 @@ const App = () => {
         `a new blog ${blog.title} by ${blog.author} added`
       )
     } catch(e)  {
-      console.error(e)
-
       showNotification(
         'error',
         'fail to add a new blog'
@@ -169,10 +166,19 @@ const App = () => {
               onChange={(event) => handleInput(event, setUrl)}
             />
           </div>
-          <button type='submit'>create</button>
+          <div><button type='submit'>create</button></div>
+          <div><button type='cancel' onClick={toggleVisibility}>cancel</button></div>
         </form>
       </div>
     )
+  }
+
+  const toggleButton = () => {
+    return <button onClick={toggleVisibility}>new blog</button>
+  }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
   }
 
   const blogList = () => {
@@ -185,7 +191,9 @@ const App = () => {
         <span>{user.name} logged in </span>
         <button onClick={handleLogout}>logout</button>
         <br /><br />
-        {blogForm()}
+        {visible
+         ? blogForm()
+         : toggleButton()}
         {
           blogs.map(
             blog =>
