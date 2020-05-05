@@ -8,6 +8,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -40,12 +43,27 @@ const App = () => {
     setUser(null)
   }
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value)
+  const handleNewBlog = async (event) => {
+    event.preventDefault()
+
+    const newBlog = {
+      title, author, url
+    }
+    const { token } = JSON.parse(
+      window.localStorage.getItem('loggedBlogappUser')
+    )
+
+    await blogService.setToken(token)
+    const blog = await blogService.create(newBlog)
+
+    setBlogs(blogs.concat(blog))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value)
+  const handleInput = (event, setFunction) => {
+    setFunction(event.target.value)
   }
 
   const loginForm = () => {
@@ -59,7 +77,7 @@ const App = () => {
               type='text'
               value={username}
               name='Username'
-              onChange={handleUsernameChange}
+              onChange={(event) => handleInput(event, setUsername)}
             />
           </div>
           <div>
@@ -68,10 +86,48 @@ const App = () => {
               type='password'
               value={password}
               name='Password'
-              onChange={handlePasswordChange}
+              onChange={(event) => handleInput(event, setPassword)}
             />
           </div>
           <button type='submit'>login</button>
+        </form>
+      </div>
+    )
+  }
+
+  const blogForm = () => {
+    return (
+      <div>
+        <h2>create new</h2>
+        <form onSubmit={handleNewBlog}>
+          <div>
+            title:
+            <input
+              type='text'
+              value={title}
+              name='Title'
+              onChange={(event) => handleInput(event, setTitle)}
+            />
+          </div>
+          <div>
+            author:
+            <input
+              type='text'
+              value={author}
+              name='Author'
+              onChange={(event) => handleInput(event, setAuthor)}
+            />
+          </div>
+          <div>
+            url:
+            <input
+              type='text'
+              value={url}
+              name='Url'
+              onChange={(event) => handleInput(event, setUrl)}
+            />
+          </div>
+          <button type='submit'>create</button>
         </form>
       </div>
     )
@@ -83,6 +139,8 @@ const App = () => {
         <h2>blogs</h2>
         <span>{user.name} logged in </span>
         <button onClick={handleLogout}>logout</button>
+        <br /><br />
+        {blogForm()}
         {
           blogs.map(
             blog =>
