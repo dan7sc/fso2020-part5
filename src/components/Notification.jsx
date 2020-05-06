@@ -5,7 +5,7 @@ const Notification = ({ type, message }) => {
   if (type && message)
     return <div className={type}>{message}</div>
   else
-    return null
+    return <div></div>
 }
 
 Notification.propTypes = {

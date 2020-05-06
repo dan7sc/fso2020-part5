@@ -22,7 +22,7 @@ const Blog = ({
 
   const [visible, setVisible] = useState(false)
 
-  const showWhenVisible = { display: visible ? '' : 'none'}
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
   const buttonLabel = visible ? 'hide' : 'view'
 
