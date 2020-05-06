@@ -84,6 +84,33 @@ const App = () => {
     }
   }
 
+  const addLike = async (oldObject) => {
+    const { token } = JSON.parse(
+      window.localStorage.getItem('loggedBlogappUser')
+    )
+    await blogService.setToken(token)
+
+    const newObject = { ...oldObject }
+    newObject.likes += 1
+
+    try {
+      const updatedBlog = await blogService.update(newObject.id, newObject)
+      const newBlogs = blogs.map(blog => {
+        if (blog.url === updatedBlog.url) {
+          blog.likes += 1
+          return blog
+        } else return blog
+      })
+      setBlogs(newBlogs)
+      //setBlogFormVisible(false)
+      //setNotification(['success', `you like this blog ${blog.title} by ${blog.author}`])
+      //setNotificationVisible(true)
+    } catch(e)  {
+      setNotification(['error', 'fail to add like'])
+      setNotificationVisible(true)
+    }
+  }
+
   const showNotification = () => {
     setTimeout(() => {
       setNotificationVisible(false)
@@ -146,7 +173,11 @@ const App = () => {
         {
           blogs.map(
             blog =>
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleClick={addLike}
+              />
           )
         }
       </div>
