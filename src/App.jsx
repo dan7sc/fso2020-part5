@@ -13,7 +13,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState([]) // [type: ['error', 'success'], message]
   const [notificationVisible, setNotificationVisible] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
@@ -61,19 +61,21 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
-    setVisible(false)
+    setBlogFormVisible(false)
   }
 
   const addBlog = async (newObject) => {
     const { token } = JSON.parse(
       window.localStorage.getItem('loggedBlogappUser')
     )
-
     await blogService.setToken(token)
 
     try {
       const blog = await blogService.create(newObject)
+      blog.user = {}
+      blog.user.name =  user.name
       setBlogs(blogs.concat(blog))
+      setBlogFormVisible(false)
       setNotification(['success', `a new blog ${blog.title} by ${blog.author} added`])
       setNotificationVisible(true)
     } catch(e)  {
@@ -123,7 +125,7 @@ const App = () => {
   }
 
   const toggleVisibility = () => {
-    setVisible(!visible)
+    setBlogFormVisible(!blogFormVisible)
   }
 
   const blogList = () => {
@@ -137,7 +139,7 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
         <br /><br />
         {
-          visible
+          blogFormVisible
             ? blogForm()
             : toggleButton()
         }
