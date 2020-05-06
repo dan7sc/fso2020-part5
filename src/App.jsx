@@ -16,9 +16,14 @@ const App = () => {
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
-    blogService.getAll().then(blogs => {
+    const localGetAll = async () => {
+      const blogs = await blogService.getAll()
+      await blogs.sort((blogA, blogB) => {
+        return blogB.likes - blogA.likes
+      })
       setBlogs(blogs)
-    })
+    }
+    localGetAll()
   }, [])
 
   useEffect(() => {
