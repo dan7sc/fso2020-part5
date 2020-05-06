@@ -77,8 +77,7 @@ const App = () => {
 
     try {
       const blog = await blogService.create(newObject)
-      blog.user = {}
-      blog.user.name =  user.name
+      blog.user = user
       setBlogs(blogs.concat(blog))
       setBlogFormVisible(false)
       setNotification(['success', `a new blog ${blog.title} by ${blog.author} added`])
@@ -86,6 +85,28 @@ const App = () => {
     } catch(e)  {
       setNotification(['error', 'fail to add a new blog'])
       setNotificationVisible(true)
+    }
+  }
+
+  const removeBlog = async (blog) => {
+    const { token } = JSON.parse(
+      window.localStorage.getItem('loggedBlogappUser')
+    )
+    await blogService.setToken(token)
+
+    try {
+      if (blog.user.username === user.username) {
+        await blogService.deleteOne(blog.id)
+        const newBlogs = blogs.filter(blogToFilter => {
+          return blogToFilter.id !== blog.id
+        })
+        setBlogs(newBlogs)
+        window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+      } else {
+        window.confirm('Not authorized')
+      }
+    } catch(e) {
+      window.confirm('Fail to delete blog')
     }
   }
 
@@ -181,7 +202,9 @@ const App = () => {
               <Blog
                 key={blog.id}
                 blog={blog}
-                handleClick={addLike}
+                user={user}
+                handleAddLike={addLike}
+                handleRemoveBlog={removeBlog}
               />
           )
         }
