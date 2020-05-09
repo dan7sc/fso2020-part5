@@ -46,9 +46,9 @@ const Blog = ({
     <div style={blogStyle}>
       <div className='displayed-items' style={showWhenHidden}>
         <span>{blog.title} {blog.author}</span>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <button className='view-button' onClick={toggleVisibility}>{buttonLabel}</button>
       </div>
-      <div style={showWhenVisible}>
+      <div className='all-items' style={showWhenVisible}>
         <div>
           <span>{blog.title} {blog.author}</span>
           <button onClick={toggleVisibility}>{buttonLabel}</button>
