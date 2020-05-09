@@ -24,6 +24,8 @@ const Blog = ({
 
   const showWhenVisible = { display: visible ? '' : 'none' }
 
+  const showWhenHidden = { display: visible ? 'none' : '' }
+
   const buttonLabel = visible ? 'hide' : 'view'
 
   const toggleVisibility = () => {
@@ -42,9 +44,15 @@ const Blog = ({
 
   return (
     <div style={blogStyle}>
-      <span>{blog.title} {blog.author}</span>
-      <button onClick={toggleVisibility}>{buttonLabel}</button>
+      <div className='displayed-items' style={showWhenHidden}>
+        <span>{blog.title} {blog.author}</span>
+        <button onClick={toggleVisibility}>{buttonLabel}</button>
+      </div>
       <div style={showWhenVisible}>
+        <div>
+          <span>{blog.title} {blog.author}</span>
+          <button onClick={toggleVisibility}>{buttonLabel}</button>
+        </div>
         <div>{blog.url}</div>
         <div>
           likes {blog.likes}
