@@ -62,5 +62,23 @@ describe('Blog app', function() {
         .should('contain', `a new blog ${blog.title} by ${blog.author} added`)
         .and('have.css', 'color', 'rgb(0, 128, 0)')
     })
+
+    describe('And a blog exists', function() {
+      beforeEach(function() {
+        const blog = {
+          title: 'Go To Statement Considered Harmful',
+          author: 'Edsger W. Dijkstra',
+          url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html'
+        }
+        cy.createBlog(blog)
+      })
+
+      it('It can be liked', function() {
+        cy.get('.view-button').click()
+        cy.get('.like-button').click()
+
+        cy.contains('likes 1')
+      })
+    })
   })
 })
