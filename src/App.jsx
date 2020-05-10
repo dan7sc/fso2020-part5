@@ -96,12 +96,13 @@ const App = () => {
 
     try {
       if (blog.user.username === user.username) {
-        await blogService.deleteOne(blog.id)
-        const newBlogs = blogs.filter(blogToFilter => {
-          return blogToFilter.id !== blog.id
-        })
-        setBlogs(newBlogs)
-        window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+          await blogService.deleteOne(blog.id)
+          const newBlogs = blogs.filter(blogToFilter => {
+            return blogToFilter.id !== blog.id
+          })
+          setBlogs(newBlogs)
+        }
       } else {
         window.confirm('Not authorized')
       }
