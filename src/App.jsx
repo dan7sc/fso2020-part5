@@ -203,7 +203,7 @@ const App = () => {
                 key={blog.id}
                 blog={blog}
                 user={user}
-                handleAddLike={addLike}
+                handleAddLike={() => addLike(blog)}
                 handleRemoveBlog={removeBlog}
               />
           )

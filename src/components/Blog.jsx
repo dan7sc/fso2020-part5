@@ -55,8 +55,8 @@ const Blog = ({
         </div>
         <div>{blog.url}</div>
         <div>
-          likes {blog.likes}
-          <button onClick={() => handleAddLike(blog)}>like</button>
+          <span>likes {blog.likes}</span>
+          <button className='like-button' onClick={handleAddLike}>like</button>
         </div>
         <div>{blog.user ? blog.user.name : 'unknown'}</div>
         {
