@@ -3,6 +3,8 @@
 .dir-locals.el
 .projectile
 
+cypress/videos
+
 # dependencies
 /node_modules
 /.pnp
