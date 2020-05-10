@@ -1,12 +1,21 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
+
     const user = {
       name: 'Matti Luukkainen',
       username: 'mluukkai',
       password: 'salainen'
     }
     cy.request('POST', 'http://localhost:3003/api/users', user)
+
+    const anotherUser = {
+      name: 'Arto Hellas',
+      username: 'hellas',
+      password: 'salainen'
+    }
+    cy.request('POST', 'http://localhost:3003/api/users', anotherUser)
+
     cy.visit('http://localhost:3000')
   })
 
@@ -78,6 +87,44 @@ describe('Blog app', function() {
         cy.get('.like-button').click()
 
         cy.contains('likes 1')
+      })
+    })
+  })
+
+  describe('Logged user', function() {
+    beforeEach(function() {
+      const blog = {
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html'
+      }
+      cy.login({ username: 'mluukkai', password: 'salainen' })
+      cy.createBlog(blog)
+    })
+
+    describe('Who created a blog', function() {
+      beforeEach(function() {
+        cy.login({ username: 'mluukkai', password: 'salainen' })
+      })
+
+      it('Can delete it', function() {
+        cy.get('.view-button').click()
+        cy.get('#delete-blog-button').click()
+        cy.contains('remove')
+        cy.contains('First class tests').not()
+        cy.contains('Robert C. Martin').not()
+        cy.contains('http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html').not()
+      })
+    })
+
+    describe.only('Who not created a blog', function() {
+      beforeEach(function() {
+        cy.login({ username: 'hellas', password: 'salainen' })
+      })
+
+      it('Cannot delete it', function() {
+        cy.get('.view-button').click()
+        cy.get('button').not('#delete-blog-button')
       })
     })
   })

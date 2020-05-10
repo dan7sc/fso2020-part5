@@ -35,6 +35,7 @@ const Blog = ({
   const showRemoveButton = () => {
     return (
       <button
+        id='delete-blog-button'
         style={buttonRemoveStyle}
         onClick={() => handleRemoveBlog(blog)}>
         remove
