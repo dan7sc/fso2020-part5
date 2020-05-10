@@ -1,4 +1,4 @@
-describe('Bloglist app', function() {
+describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     const user = {
@@ -33,6 +33,34 @@ describe('Bloglist app', function() {
       cy.get('.error')
         .should('contain', 'wrong username or password')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
+    })
+  })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'mluukkai', password: 'salainen' })
+    })
+
+    it('A blog can be created', function() {
+      const blog = {
+        title: 'React patterns',
+        author: 'Michael Chan',
+        url: 'https://reactpatterns.com/'
+      }
+
+      cy.contains('new blog').click()
+      cy.get('#title').type(blog.title)
+      cy.get('#author').type(blog.author)
+      cy.get('#url').type(blog.url)
+      cy.get('#create-button').click()
+
+      cy.contains(blog.title)
+      cy.contains(blog.author)
+      cy.contains(blog.url)
+
+      cy.get('.success')
+        .should('contain', `a new blog ${blog.title} by ${blog.author} added`)
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
     })
   })
 })

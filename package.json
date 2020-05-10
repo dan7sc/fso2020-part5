@@ -21,6 +21,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --browser /usr/bin/chromium-browser"
   },
+  "proxy": "http://localhost:3003",
   "eslintConfig": {
     "extends": "react-app"
   },
