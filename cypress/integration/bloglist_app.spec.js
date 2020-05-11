@@ -117,7 +117,7 @@ describe('Blog app', function() {
       })
     })
 
-    describe.only('Who not created a blog', function() {
+    describe('Who not created a blog', function() {
       beforeEach(function() {
         cy.login({ username: 'hellas', password: 'salainen' })
       })
@@ -125,6 +125,50 @@ describe('Blog app', function() {
       it('Cannot delete it', function() {
         cy.get('.view-button').click()
         cy.get('button').not('#delete-blog-button')
+      })
+    })
+  })
+
+  describe('blogs are ordered', function() {
+    beforeEach(function() {
+      const blogs = [
+        {
+          title: 'React patterns',
+          author: 'Michael Chan',
+          url: 'https://reactpatterns.com/',
+          likes: 2
+        },
+        {
+          title: 'Go To Statement Considered Harmful',
+          author: 'Edsger W. Dijkstra',
+          url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+          likes: 8
+        },
+        {
+          title: 'Canonical string reduction',
+          author: 'Edsger W. Dijkstra',
+          url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+          likes: 5
+        },
+        {
+          title: 'First class tests',
+          author: 'Robert C. Martin',
+          url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+          likes: 11
+        },
+      ]
+
+      cy.login({ username: 'mluukkai', password: 'salainen' })
+      blogs.forEach(blog => {
+        cy.createBlog(blog)
+      })
+    })
+
+    it('with the most likes being first', function() {
+      const numberOfLikesDesc = [11, 8, 5, 2]
+
+      cy.get('.all-items').each((item, index) => {
+        cy.get(item).contains(`likes ${numberOfLikesDesc[index]}`)
       })
     })
   })
