@@ -129,7 +129,9 @@ describe('Blog app', function() {
     })
   })
 
-  describe('blogs are ordered', function() {
+  describe.only('blogs are ordered', function() {
+    let blogsByNumberOfLikesDesc
+
     beforeEach(function() {
       const blogs = [
         {
@@ -158,6 +160,11 @@ describe('Blog app', function() {
         },
       ]
 
+      blogsByNumberOfLikesDesc = Array.from(blogs)
+      blogsByNumberOfLikesDesc.sort((currentBlog, previousBlog) => {
+        return previousBlog.likes - currentBlog.likes
+      })
+
       cy.login({ username: 'mluukkai', password: 'salainen' })
       blogs.forEach(blog => {
         cy.createBlog(blog)
@@ -165,10 +172,8 @@ describe('Blog app', function() {
     })
 
     it('with the most likes being first', function() {
-      const numberOfLikesDesc = [11, 8, 5, 2]
-
       cy.get('.all-items').each((item, index) => {
-        cy.get(item).contains(`likes ${numberOfLikesDesc[index]}`)
+        cy.get(item).contains(`likes ${blogsByNumberOfLikesDesc[index].likes}`)
       })
     })
   })
