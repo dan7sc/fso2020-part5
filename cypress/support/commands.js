@@ -25,22 +25,22 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', credentials => {
-  cy.request('POST', 'http://localhost:3003/api/login', credentials)
+  cy.request('POST', `${Cypress.env('apiServer')}/api/login`, credentials)
     .then(response => {
       localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
-      cy.visit('http://localhost:3000')
+      cy.visit(`${Cypress.env('apiClient')}`)
     })
 })
 
 Cypress.Commands.add('createBlog', (blog) => {
   cy.request({
     method: 'POST',
-    url: 'http://localhost:3003/api/blogs',
+    url: `${Cypress.env('apiServer')}/api/blogs`,
     body: blog,
     headers: {
       'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
     }
   })
 
-  cy.visit('http://localhost:3000')
+  cy.visit(`${Cypress.env('apiClient')}`)
 })

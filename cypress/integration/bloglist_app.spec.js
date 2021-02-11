@@ -1,22 +1,22 @@
 describe('Blog app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
+    cy.request('POST', `${Cypress.env('apiServer')}/api/testing/reset`)
 
     const user = {
       name: 'Matti Luukkainen',
       username: 'mluukkai',
       password: 'salainen'
     }
-    cy.request('POST', 'http://localhost:3003/api/users', user)
+    cy.request('POST', `${Cypress.env('apiServer')}/api/users`, user)
 
     const anotherUser = {
       name: 'Arto Hellas',
       username: 'hellas',
       password: 'salainen'
     }
-    cy.request('POST', 'http://localhost:3003/api/users', anotherUser)
+    cy.request('POST', `${Cypress.env('apiServer')}/api/users`, anotherUser)
 
-    cy.visit('http://localhost:3000')
+    cy.visit(`${Cypress.env('apiClient')}`)
   })
 
   it('Login from is shown', function() {
