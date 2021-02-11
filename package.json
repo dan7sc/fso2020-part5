@@ -19,7 +19,8 @@
     "eject": "react-scripts eject",
     "eslint": "eslint .",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run --browser /usr/bin/chromium-browser"
+    "cypress:run": "cypress run --browser /usr/bin/chromium-freeworld",
+    "cypress:start": "cypress run"
   },
   "proxy": "http://localhost:3003",
   "eslintConfig": {
@@ -37,7 +38,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:3003",
   "devDependencies": {
     "cypress": "^4.5.0",
     "eslint-plugin-cypress": "^2.10.3",
